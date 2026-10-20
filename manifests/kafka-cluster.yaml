@@ -1,0 +1,40 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: my-cluster
+  namespace: kafka
+spec:
+  kafka:
+    version: 3.8.0
+    replicas: 4
+    resources:
+      requests:
+        cpu: "1.5"
+        memory: "2Gi"
+      limits:
+        cpu: "3"
+        memory: "4Gi"
+    listeners:
+      - name: external
+        port: 9094
+        type: nodeport
+        tls: true
+        authentication:
+          type: oauth
+          clientId: kafka-client
+          clientSecret:
+            secretName: keycloak-client-secret
+            secretKey: client-secret
+    config: {}
+  zookeeper:
+    replicas: 3
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: "512Mi"
+      limits:
+        cpu: "1"
+        memory: "1Gi"
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

@@ -6,9 +6,10 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/funnyman7777-hash/kafka-gitops.git
+    repoURL: git@github.com:funnyman7777-hash/kafka-gitops.git
     targetRevision: HEAD
     path: manifests
+    helm: {}
   destination:
     server: https://kubernetes.default.svc
     namespace: default
@@ -16,3 +17,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

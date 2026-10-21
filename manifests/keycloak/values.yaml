@@ -1,0 +1,14 @@
+service:
+  type: NodePort
+  nodePorts:
+    http: 30081
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1
+    memory: 1Gi
+auth:
+  adminUser: admin
+  adminPassword: adminpassword

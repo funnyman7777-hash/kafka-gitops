@@ -1,0 +1,54 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: my-cluster
+  namespace: kafka
+spec:
+  kafka:
+    replicas: 4
+    listeners:
+      - name: external
+        port: 9094
+        type: nodeport
+        tls: true
+        authentication:
+          type: oauth
+          clientId: kafka
+          clientSecret:
+            secretName: keycloak-client-secret
+            secretKey: secret
+          tokenEndpointUri: http://keycloak.keycloak.svc.cluster.local:8080/auth/realms/master/protocol/openid-connect/token
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 10Gi
+          class: standard
+    resources:
+      limits:
+        cpu: 2
+        memory: 4Gi
+      requests:
+        cpu: 1
+        memory: 2Gi
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: 5Gi
+      class: standard
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

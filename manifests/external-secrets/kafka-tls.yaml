@@ -1,0 +1,21 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: kafka-tls
+  namespace: kafka
+spec:
+  secretStoreRef:
+    name: vault-secretstore
+    kind: SecretStore
+  target:
+    name: kafka-tls
+    creationPolicy: Owner
+  data:
+    - secretKey: tls.crt
+      remoteRef:
+        key: secret/data/kafka/tls
+        property: tls.crt
+    - secretKey: tls.key
+      remoteRef:
+        key: secret/data/kafka/tls
+        property: tls.key

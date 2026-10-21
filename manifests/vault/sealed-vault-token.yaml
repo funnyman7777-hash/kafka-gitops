@@ -1,0 +1,18 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: vault-token
+  namespace: vault
+spec:
+  encryptedData:
+    token: AgCjMyCkaVJ6ZT4vCxmfx8E+b3Tfc1YqlI0uvNtGAb4VsukuuVySoKUd51M2idxWYYoMTXwA7eQ7L1iyxJvhVqEDs4tc5eshrKBrMFDkEgcMU/ooZhi/LtOD78un6iVwIvVYC5k0K1TBhbJsCQ6AbvjW8Kq3uuAE1WcJukcYx9R1aA3ryLShF9q2GvXHa3lyRHykotElofBTjecpoNjmAxAHp9N8T6HAWYbplhj+6Uu+LcNt4kyqyFetJGn6+cdg5WEglmDkEx6CD6tNIT3XE/ROt4Dr8IyVIDmP+AopTidJU1ossrTnEIX7zQAoKt+lLN9EVYWdY2Jmq3+CBH1PtNjeBD9C2NKbkQIw3ABJyVg07Qlpn2/EYusGILup8WGF74vnI0BDjYQ1HZrDFfBDBFQadXqUzhRSBU854ikC9NHj/3Cfv/UbdPrkVziXMaE7TNWajFGiLGeki/CFg/Z3+EIwXfNybIgOMGqK8g0iJC8stN1psZmO9vTwm2O5yC//zjxTNEJf+qaSP1XiVeHRymYV7FR7q8eQPK1nyLesCww+WBDlC8cvdw32U30o61y+Ok0mc26i5K56HMiTLli9d9UxS/EVM2l6Pw9WaZ/EY5LT5uarIzLKOdkxYLaR8EuzQi+UGStCdGgh3jNjwQg8K0Aalezko+fONJECEBnbThKRdJ9hm2Q4M/aeaw9ooBc7fZ5bz8pqo2ubsRLA
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        reconcile.external-secrets.io/managed: "true"
+      name: vault-token
+      namespace: vault
+    type: Opaque

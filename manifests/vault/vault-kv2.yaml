@@ -1,0 +1,10 @@
+# Placeholder Vault KV v2 manifest
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-kv2-config
+  namespace: vault
+
+data:
+  # Add KV v2 configuration here
+  placeholder: "value"

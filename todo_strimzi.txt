@@ -10,10 +10,8 @@ Do not store or place here any files repos etc do all on remote host , if there 
 | Step | Description | Status | Notes |
 |------|-------------|--------|-------|
 | 17 | Obtain OAuth token from Keycloak for producer/consumer test. | Blocked | Keycloak is not running due to image pull issues (network connectivity). OAuth not configured in Kafka CR. |
-| 18 | Install Kafka client tools (e.g., kafkacat, kafka-console-producer/consumer) on remote host. | Done | Kafka 4.3.1 installed at /tmp/kafka_2.13-4.3.1/bin/ |
 | 19 | Run a producer/consumer test using the OAuth token. | Blocked | Cannot run until OAuth is configured and Keycloak is running. |
-| 20 | Clean up any duplicate or unnecessary files in the repository. | In Progress | Removing duplicate files from root of manifests directory. |
-| 28 | Tag the Git repository with a release version (e.g., v1.0-strimzi). | Pending | No tags present in the repository. |
+| 28 | Tag the Git repository with a release version (e.g., v1.0-strimzi). | Done | Tagged as v1.0-strimzi |
 
 # Notes
 - **Keycloak Issue:** Keycloak pods are failing to start due to image pull issues (docker.io/bitnami/keycloak:26.3.3-debian-12-r0 not found). This is a network connectivity issue preventing container image pulls from Docker Hub. Keycloak is required for OAuth authentication in Kafka.
@@ -24,12 +22,15 @@ Do not store or place here any files repos etc do all on remote host , if there 
 # Completed Tasks
 - [x] 1 - Connect to remote host and verify sudo access.
 - [x] 16 - Confirm TLS secrets are mounted in broker pods. TLS secrets (my-cluster-broker-*) are present in kafka namespace and contain tls.crt and tls.key.
+- [x] 18 - Install Kafka client tools. Kafka 4.3.1 installed at /tmp/kafka_2.13-4.3.1/bin/
+- [x] 20 - Clean up duplicate files. Removed 6 duplicate YAML files from root of manifests directory.
 - [x] 21 - Fix ARGOCD web interface errors. Argo CD is running.
 - [x] 22 - Retrieve and inspect TLS secret mounts in Kafka broker pods.
 - [x] 23 - Verify Helm is installed and Strimzi Helm repo added on remote host. Helm v3.22.1 installed.
 - [x] 24 - Ensure Kubernetes context points to the correct cluster. Context: kubernetes-admin@kubernetes, server: https://192.168.1.22:6443
 - [x] 25 - Verify Vault token SecretStore and ExternalSecret are applied and the secret is synced to Kubernetes. ExternalSecret sync errors fixed.
 - [x] 26 - Verify TLS secrets for Kafka brokers are generated in Vault and mounted via ExternalSecrets. TLS secrets exist in Vault at secret/data/kafka/tls.
+- [x] 28 - Tag the Git repository. Tagged as v1.0-strimzi.
 - [x] 29 - Ensure SSH key ~/.ssh/plot is added to GitHub repo.
 
 # Admin Passwords
@@ -44,12 +45,12 @@ Do not store or place here any files repos etc do all on remote host , if there 
 - Kafka client tools: kafka-console-producer.sh, kafka-console-consumer.sh, kafka-topics.sh, etc.
 
 # Repository Cleanup
-- kafka.yaml (root) is correct - contains KafkaNodePool resources for Strimzi v1 API
-- kafka-cluster.yaml (root) is outdated - will be removed (has ZooKeeper)
-- argocd-app.yaml (root) is duplicate of argo-app.yaml - will be removed
-- external-secret-vault-token.yaml (root) is duplicate of external-secrets/external-secrets.yaml - will be removed
-- keycloak-client-secret.yaml (root) is duplicate of keycloak/keycloak.yaml - will be removed
-- secretstore.yaml (root) is duplicate of external-secrets/secretstore.yaml - will be removed
-- vault-token-secret.yaml (root) is duplicate of vault/vault-token-secret.yaml - will be removed
+- Removed duplicate files: argocd-app.yaml, external-secret-vault-token.yaml, kafka-cluster.yaml, keycloak-client-secret.yaml, secretstore.yaml, vault-token-secret.yaml
+- Correct files remain: argo-app.yaml, kafka.yaml (with KafkaNodePool resources)
+
+# Git Repository Status
+- Tag: v1.0-strimzi
+- Branch: main
+- Repository: https://github.com/funnyman7777-hash/kafka-gitops
 
 # File last updated: 2026-10-23

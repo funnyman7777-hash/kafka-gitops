@@ -66,13 +66,6 @@ When you commit todo_strimzi.txt to github repo dont show in public admin passwo
 
 ---
 
-## 🔐 Admin Passwords
-
-| Service | Username | Password | Source |
-|---------|----------|----------|--------|
-| Argo CD | admin | `3GNwJAJAZOGChLzn` | `kubectl get secrets -n argocd argocd-initial-admin-secret` |
-| Vault | N/A | `my-vault-token-123` | `kubectl get secrets -n vault vault-token` |
-| Keycloak | admin | `adminpassword` | `kubectl get secrets -n keycloak keycloak` (not accessible due to Keycloak not running) |
 
 ---
 

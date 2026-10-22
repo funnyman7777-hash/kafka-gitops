@@ -12,7 +12,7 @@ Do not store or place here any files repos etc do all on remote host , if there 
 |------|-------------|--------|-------|
 | 17 | Obtain OAuth token from Keycloak for producer/consumer test. | ⬜ | Keycloak is not running due to image pull issues (network connectivity). OAuth not configured in Kafka CR. |
 | 19 | Run a producer/consumer test using the OAuth token. | ⬜ | Cannot run until OAuth is configured and Keycloak is running. |
-| 27 | Document the full installation and configuration steps in README.md. | ⬜ | README.md needs to be created in the kafka-gitops repository. |
+| 27 | Document the full installation and configuration steps in README.md. | ✅ | README.md created in kafka-gitops repository.
 
 ## 🔧 Completed Tasks
 

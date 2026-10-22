@@ -56,7 +56,7 @@ When you commit todo_strimzi.txt to github repo dont show in public admin passwo
 - [x] 13b – Ensure no local modifications are made; all operations run on remote host only.
 - [x] 14e – Adjust Kafka CR manifest to match operator schema (v1) using correct fields per Strimzi docs.
 - [x] 16 – Confirm TLS secrets are mounted in broker pods. | ✅ | TLS secrets (my-cluster-broker-*) are present in kafka namespace and contain tls.crt and tls.key |
-| [x] 21 – Fix ARGOCD web interface errors (investigate UI logs, update auth config). | ✅ | Argo CD is running. Admin password: `3GNwJAJAZOGChLzn` |
+| [x] 21 – Fix ARGOCD web interface errors (investigate UI logs, update auth config). | ✅ | Argo CD is running. Admin password: `` |
 - [x] 22 – Retrieve and inspect TLS secret mounts in Kafka broker pods. | ✅ | TLS secrets are mounted in broker pods via my-cluster-broker-* secrets. |
 - [x] 22b – Run end-to-end Kafka validation: produce and consume test messages using OAuth token. | ⬜ | Cannot run until OAuth is configured. |
 - [x] 23 – Verify Helm is installed and Strimzi Helm repo added on remote host. | ✅ | Helm v3.22.1 installed. Strimzi Helm chart installed via manifests. |

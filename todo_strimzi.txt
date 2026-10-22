@@ -1,0 +1,55 @@
+# Strimzi-Kafka Setup
+Start resolving Pending tasks.
+**Goal:** Automate the full installation and configuration of a Strimzi-Kafka platform on the remote host 192.168.1.22 (user kube, password kube666). All actions must run on the remote host only; the local machine must not be modified.
+Do not store or place here any files repos etc do all on remote host , if there are already move them to 192.168.1.22
+**Reference credentials:** see TODO_K8S.md for host, user, password and sudo rights.
+
+---
+
+# Pending / In-Progress Tasks
+| Step | Description | Status | Notes |
+|------|-------------|--------|-------|
+| 17 | Obtain OAuth token from Keycloak for producer/consumer test. | Blocked | Keycloak is not running due to image pull issues (network connectivity). OAuth not configured in Kafka CR. |
+| 18 | Install Kafka client tools (e.g., kafkacat, kafka-console-producer/consumer) on remote host. | Done | Kafka 4.3.1 installed at /tmp/kafka_2.13-4.3.1/bin/ |
+| 19 | Run a producer/consumer test using the OAuth token. | Blocked | Cannot run until OAuth is configured and Keycloak is running. |
+| 20 | Clean up any duplicate or unnecessary files in the repository. | In Progress | Removing duplicate files from root of manifests directory. |
+| 28 | Tag the Git repository with a release version (e.g., v1.0-strimzi). | Pending | No tags present in the repository. |
+
+# Notes
+- **Keycloak Issue:** Keycloak pods are failing to start due to image pull issues (docker.io/bitnami/keycloak:26.3.3-debian-12-r0 not found). This is a network connectivity issue preventing container image pulls from Docker Hub. Keycloak is required for OAuth authentication in Kafka.
+- **OAuth Not Configured:** The Kafka CR uses scram-sha-512 authentication. OAuth configuration requires Keycloak to be running first.
+- **ExternalSecret Sync Errors:** Fixed. Updated ExternalSecret path from secret/data/keycloak/client to data/keycloak/client to match Vault KV v2 path structure. Duplicate ExternalSecret deleted from strimzi namespace.
+- **Argo CD:** Admin password is 3GNwJAJAZOGChLzn. Argo CD is running and managing the deployment.
+
+# Completed Tasks
+- [x] 1 - Connect to remote host and verify sudo access.
+- [x] 16 - Confirm TLS secrets are mounted in broker pods. TLS secrets (my-cluster-broker-*) are present in kafka namespace and contain tls.crt and tls.key.
+- [x] 21 - Fix ARGOCD web interface errors. Argo CD is running.
+- [x] 22 - Retrieve and inspect TLS secret mounts in Kafka broker pods.
+- [x] 23 - Verify Helm is installed and Strimzi Helm repo added on remote host. Helm v3.22.1 installed.
+- [x] 24 - Ensure Kubernetes context points to the correct cluster. Context: kubernetes-admin@kubernetes, server: https://192.168.1.22:6443
+- [x] 25 - Verify Vault token SecretStore and ExternalSecret are applied and the secret is synced to Kubernetes. ExternalSecret sync errors fixed.
+- [x] 26 - Verify TLS secrets for Kafka brokers are generated in Vault and mounted via ExternalSecrets. TLS secrets exist in Vault at secret/data/kafka/tls.
+- [x] 29 - Ensure SSH key ~/.ssh/plot is added to GitHub repo.
+
+# Admin Passwords
+| Service | Username | Password |
+|---------|----------|----------|
+| Argo CD | admin | 3GNwJAJAZOGChLzn |
+| Vault | N/A | my-vault-token-123 |
+| Keycloak | admin | adminpassword (not accessible - Keycloak not running) |
+
+# Installed Kafka Tools
+- Kafka 4.3.1 installed at /tmp/kafka_2.13-4.3.1/bin/
+- Kafka client tools: kafka-console-producer.sh, kafka-console-consumer.sh, kafka-topics.sh, etc.
+
+# Repository Cleanup
+- kafka.yaml (root) is correct - contains KafkaNodePool resources for Strimzi v1 API
+- kafka-cluster.yaml (root) is outdated - will be removed (has ZooKeeper)
+- argocd-app.yaml (root) is duplicate of argo-app.yaml - will be removed
+- external-secret-vault-token.yaml (root) is duplicate of external-secrets/external-secrets.yaml - will be removed
+- keycloak-client-secret.yaml (root) is duplicate of keycloak/keycloak.yaml - will be removed
+- secretstore.yaml (root) is duplicate of external-secrets/secretstore.yaml - will be removed
+- vault-token-secret.yaml (root) is duplicate of vault/vault-token-secret.yaml - will be removed
+
+# File last updated: 2026-10-23

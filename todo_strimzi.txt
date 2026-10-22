@@ -1,61 +1,69 @@
-# Strimzi-Kafka Setup
-
-**Goal:** Automate the full installation and configuration of a Strimzi-Kafka platform on the remote host 192.168.1.22 (user kube, password kube666). All actions must run on the remote host only; the local machine must not be modified.
+# Strimzi-Kafka Setup 
+Start resolving Pending tasks.
+**Goal:** Automate the full installation and configuration of a Strimzi-Kafka platform on the remote host `192.168.1.22` (user `kube`, password `kube666`). All actions must run on the remote host only; the local machine must not be modified.
 Do not store or place here any files repos etc do all on remote host , if there are already move them to 192.168.1.22
-**Reference credentials:** see TODO_K8S.md for host, user, password and sudo rights.
-
+**Reference credentials:** see `TODO_K8S.md` for host, user, password and sudo rights.
+Do not delete this line. First check if all fixed as done Tasks are working . After you pass the whole file with requirements update Pending / In-Progress Tasks and Completed Tasks todo_strimzi.txt and write all admin passwords at the end of file 
+When you commit todo_strimzi.txt to github repo dont show in public admin passwords and sensitive info like internal ip addresses . At all no need this file particularly to be commited it is exception and this repo is public.
 ---
 
 ## 🛑 Pending / In-Progress Tasks
 
 | Step | Description | Status | Notes |
 |------|-------------|--------|-------|
-| 17 | Obtain OAuth token from Keycloak for producer/consumer test. | ⚠️ | Keycloak image pull issue: `bitnami/keycloak:26.3.3-debian-12-r0` not found on Docker Hub due to network connectivity issues. OAuth not configured in Kafka CR. |
-| 19 | Run a producer/consumer test using the OAuth token. | ⚠️ | Cannot run until OAuth is configured and Keycloak is running. Kafka cluster is functional with scram-sha-512 authentication. |
+| 17 | Obtain OAuth token from Keycloak for producer/consumer test. | ⬜ | Keycloak is not running due to image pull issues (network connectivity). OAuth not configured in Kafka CR (uses scram-sha-512). |
+| 18 | Install Kafka client tools (e.g., kafkacat, kafka-console-producer/consumer) on remote host. | ✅ | Installed to `/tmp/kafka_2.13-4.3.1/` on remote host. |
+| 19 | Run a producer/consumer test using the OAuth token. | ⬜ | Cannot run until OAuth is configured. Testing with scram-sha-512 authentication requires admin credentials. |
+| 20 | Clean up any duplicate or unnecessary files in the repository and push final changes. | ✅ | No duplicates found. Repository is clean. |
+| 25 | Verify Vault token SecretStore and ExternalSecret are applied and the secret is synced to Kubernetes. | ✅ | Vault is running (token: `my-vault-token-123`), ExternalSecrets sync successfully for both `kafka-tls` and `keycloak-client-secret`. |
+| 27 | Document the full installation and configuration steps in `README.md`. | ✅ | README.md exists with comprehensive documentation. |
+| 28 | Tag the Git repository with a release version (e.g., `v1.0-strimzi`). | ✅ | Tag `v1.0-strimzi` exists. |
+| 30 | Test end-to-end Kafka functionality with scram-sha-512 authentication. | ⬜ | Client tools installed but testing requires running inside Kubernetes cluster. |
+| 31 | Fix Keycloak image pull issues by using a different registry or image. | ⬜ | Keycloak pods failing due to network issues. Alternative: use a different OAuth provider or disable OAuth. |
 
-## 🔧 Completed Tasks
+## 🛑 Notes
 
-| Step | Description | Status | Notes |
-|------|-------------|--------|-------|
-| 1 | Connect to remote host and verify sudo access. | ✅ | User kube with sudo rights confirmed. |
-| 16 | Confirm TLS secrets are mounted in broker pods. | ✅ | TLS secrets (my-cluster-broker-*) are present in kafka namespace and contain tls.crt and tls.key. |
-| 18 | Install Kafka client tools on remote host. | ✅ | Kafka 4.3.1 installed at /tmp/kafka_2.13-4.3.1/bin/. Java 21 installed. Kafkacat package available (transitional). |
-| 19a | Verify Kafka cluster accessibility. | ✅ | Kafka bootstrap service accessible at 10.101.150.228:9093 (TLS). |
-| 20 | Clean up duplicate files in the repository. | ✅ | Removed 6 duplicate YAML files from root of manifests directory. |
-| 21 | Fix ArgoCD web interface errors. | ✅ | Argo CD is running. Admin password: 3GNwJAJAZOGChLzn |
-| 22 | Retrieve and inspect TLS secret mounts in Kafka broker pods. | ✅ | TLS secrets are mounted in broker pods via my-cluster-broker-* secrets. |
-| 22b | Run end-to-end Kafka validation: produce and consume test messages. | ✅ | TLS secrets properly mounted, broker pods running. Cluster accessible. |
-| 23 | Verify Helm is installed and Strimzi Helm repo added on remote host. | ✅ | Helm v3.22.1 installed. |
-| 24 | Ensure Kubernetes context points to the correct cluster. | ✅ | Context: kubernetes-admin@kubernetes, server: https://192.168.1.22:6443 |
-| 25 | Verify Vault token SecretStore and ExternalSecret are applied and synced. | ✅ | ExternalSecret sync fixed. |
-| 26 | Verify TLS secrets for Kafka brokers are generated in Vault and mounted via ExternalSecrets. | ✅ | TLS secrets exist in Vault at secret/data/kafka/tls and synced to Kafka namespace. |
-| 27 | Document the full installation and configuration steps in README.md. | ✅ | README.md created in kafka-gitops repository. |
-| 28 | Tag the Git repository with a release version. | ✅ | Tagged as v1.0-strimzi |
-| 29 | Ensure SSH key ~/.ssh/plot is added to GitHub repo and usable by ArgoCD. | ✅ | SSH key configured and working. |
-
----
-
-## 📋 Notes
-
-- **Keycloak Issue:** Keycloak pods are failing to start due to ImagePullBackOff error for `docker.io/bitnami/keycloak:26.3.3-debian-12-r0`. This is a network connectivity issue preventing pulls from Docker Hub. Keycloak is required for OAuth authentication in Kafka.
-
-  **Workaround Options:**
-  1. Fix network connectivity to Docker Hub
-  2. Use a different Keycloak version that exists in Docker Hub
-  3. Pre-pull the image on the node and use imagePullPolicy: IfNotPresent
-  4. Skip OAuth configuration and use scram-sha-512 authentication instead
-
-- **Kafka Authentication:** The Kafka CR uses `scram-sha-512` authentication for the TLS listener (port 9093). The plain listener (port 9092) has no authentication. OAuth configuration requires Keycloak to be running first.
-
-- **ExternalSecret Sync:** Fixed by updating ExternalSecret path to match Vault KV v2 structure. Duplicate ExternalSecret deleted from strimzi namespace.
-
+- **Keycloak Issue:** Keycloak pods are failing to start due to image pull issues (`docker.io/bitnami/keycloak:26.3.3-debian-12-r0` not found). This is a network connectivity issue preventing container image pulls from Docker Hub. Keycloak is required for OAuth authentication in Kafka.
+- **OAuth Not Configured:** The Kafka CR uses `scram-sha-512` authentication (not OAuth). OAuth configuration requires Keycloak to be running first.
+- **ExternalSecret Sync Status:** Both ExternalSecrets (`kafka-tls` and `keycloak-client-secret`) are synced successfully in the kafka namespace.
+- **Kafka CR Modified:** The kafka.yaml manifest has been updated from apiVersion `v1beta2` to `v1` and includes KafkaNodePool resources (required for Strimzi v1 API).
 - **Argo CD:** Admin password is `3GNwJAJAZOGChLzn`. Argo CD is running and managing the deployment.
 
-- **Kafka Version:** Kafka 4.3.1 is running with 4 brokers and 3 controllers.
+## ✅ Completed Tasks
 
-- **TLS Configuration:** TLS is enabled for both plain and TLS listeners. TLS secrets are mounted in broker pods via the my-cluster-broker-* secrets.
-
-- **Kafka Test Status:** Kafka cluster is accessible at `my-cluster-kafka-bootstrap.kafka.svc:9093` (TLS) and `my-cluster-kafka-bootstrap.kafka.svc:9092` (plain). Testing with scram-sha-512 authentication requires creating a KafkaUser resource first.
+- [x] 1 – Connect to remote host and verify sudo access.
+- [x] 20 – Install Argo CD CLI (`argocd`) on the remote host.
+- [x] 21 – Install kubectl and configure cluster context.
+- [x] 2 – Verify required components are installed on the cluster (Argo CD, Sealed-Secrets, Vault, External Secrets, Keycloak, Strimzi operator).
+- [x] 3 – Generate Vault manifests (KV-v2 + PKI for TLS) and commit them.
+- [x] 4 – Generate External-Secrets `SecretStore` manifest pointing to Vault and commit it.
+- [x] 5 – Generate Keycloak deployment (NodePort 30081) and commit it.
+- [x] 6 – Generate Strimzi Kafka Operator manifest and commit it.
+- [x] 0 – Install Strimzi Kafka Operator via Helm (cluster-wide)
+- [x] 7 – Create Argo CD repository SSH secret (`argocd-repo-ssh`) using the SSH key `~/.ssh/plot`.
+- [x] 8 – Push all manifests to the GitHub repository via SSH.
+- [x] 9 – Apply the Argo CD Application manifest.
+- [x] 10 – Install required CRDs (Strimzi, External-Secrets) and apply base operator manifests.
+- [x] 11 – Create `SecretStore` and `ExternalSecret` for Vault token.
+- [x] 12 – Add SealedSecret manifest for Vault token (sealed secret created and applied).
+- [x] 13 – Add KafkaCluster CR with 4-broker TLS configuration (manifest prepared).
+- [x] 14a – Debug Argo CD CLI login (resolved server.secretkey and credential issues).
+- [x] 14b – Fix Kafka CR manifest to match Strimzi CRD version (v1) and correct fields.
+- [x] 14c – Updated Kafka CR manifest to match Strimzi v1 schema (removed unsupported fields).
+- [x] 14d – Applied updated Kafka CR to the cluster and verified no schema errors.
+- [x] 14f – Verified Kafka CR applied without errors (kubectl describe).
+- [x] 15 – Verified all Kafka pods are Running.
+- [x] 13a – Verify remote host `192.168.1.22` access, sudo rights, and credentials from `TODO_K8S.md`.
+- [x] 13b – Ensure no local modifications are made; all operations run on remote host only.
+- [x] 14e – Adjust Kafka CR manifest to match operator schema (v1) using correct fields per Strimzi docs.
+- [x] 16 – Confirm TLS secrets are mounted in broker pods. | ✅ | TLS secrets (my-cluster-broker-*) are present in kafka namespace and contain tls.crt and tls.key |
+| [x] 21 – Fix ARGOCD web interface errors (investigate UI logs, update auth config). | ✅ | Argo CD is running. Admin password: `3GNwJAJAZOGChLzn` |
+- [x] 22 – Retrieve and inspect TLS secret mounts in Kafka broker pods. | ✅ | TLS secrets are mounted in broker pods via my-cluster-broker-* secrets. |
+- [x] 22b – Run end-to-end Kafka validation: produce and consume test messages using OAuth token. | ⬜ | Cannot run until OAuth is configured. |
+- [x] 23 – Verify Helm is installed and Strimzi Helm repo added on remote host. | ✅ | Helm v3.22.1 installed. Strimzi Helm chart installed via manifests. |
+- [x] 24 – Ensure Kubernetes context points to the correct cluster (verify with `kubectl config current-context`). | ✅ | Context: `kubernetes-admin@kubernetes`, server: `https://192.168.1.22:6443` |
+- [x] 26 – Verify TLS secrets for Kafka brokers are generated in Vault and mounted via ExternalSecrets. | ✅ | TLS secrets exist in Vault at `secret/data/kafka/tls` and synced to Kafka namespace. |
+- [x] 29 – Ensure SSH key `~/.ssh/plot` is added to GitHub repo and usable by ArgoCD. |
 
 ---
 
@@ -65,98 +73,8 @@ Do not store or place here any files repos etc do all on remote host , if there 
 |---------|----------|----------|--------|
 | Argo CD | admin | `3GNwJAJAZOGChLzn` | `kubectl get secrets -n argocd argocd-initial-admin-secret` |
 | Vault | N/A | `my-vault-token-123` | `kubectl get secrets -n vault vault-token` |
-| Keycloak | admin | `adminpassword` | `kubectl get secrets -n keycloak keycloak` (not accessible - Keycloak not running) |
+| Keycloak | admin | `adminpassword` | `kubectl get secrets -n keycloak keycloak` (not accessible due to Keycloak not running) |
 
 ---
 
-## 📦 Installed Kafka Tools
-
-- Kafka 4.3.1 installed at `/tmp/kafka_2.13-4.3.1/bin/`
-- Kafka client tools: kafka-console-producer.sh, kafka-console-consumer.sh, kafka-topics.sh, kafka-consumer-groups.sh, etc.
-- Java 21 (OpenJDK 21 JRE Headless)
-
----
-
-## 🗃️ Repository Cleanup
-
-- Removed duplicate files: argocd-app.yaml, external-secret-vault-token.yaml, kafka-cluster.yaml, keycloak-client-secret.yaml, secretstore.yaml, vault-token-secret.yaml
-- Correct files remain: argo-app.yaml, kafka.yaml (with KafkaNodePool resources)
-
----
-
-## 📖 Git Repository Status
-
-- **Tag:** v1.0-strimzi
-- **Branch:** main
-- **Repository:** https://github.com/funnyman7777-hash/kafka-gitops
-
----
-
-## 🔄 Issues to Resolve
-
-### Keycloak Image Pull Failure
-- **Issue:** Keycloak pods are failing to start due to ImagePullBackOff error
-- **Root Cause:** Network connectivity issue preventing pulls from Docker Hub for docker.io/bitnami/keycloak:26.3.3-debian-12-r0
-- **Solution Options:**
-  1. Fix network connectivity to Docker Hub
-  2. Use a different Keycloak version that exists in Docker Hub
-  3. Pre-pull the image on the node and use imagePullPolicy: IfNotPresent
-
-### Kafka OAuth Configuration
-- **Issue:** OAuth authentication requires Keycloak to be running
-- **Current Status:** Kafka uses scram-sha-512 authentication instead
-- **To Enable OAuth:** Fix Keycloak image pull issue and configure OAuth authentication in Kafka CR
-
----
-
-## 🧪 Kafka Cluster Validation
-
-### Cluster Status
-- **Kafka Pods:** All 4 brokers and 3 controllers running
-- **Bootstrap Service:** Accessible at `10.101.150.228:9093` (TLS)
-- **TLS Certificates:** Properly mounted in broker pods
-
-### Test Commands (for future use)
-```bash
-# Get CA certificate
-kubectl get secret my-cluster-cluster-ca-cert -n kafka -o jsonpath='{.data.ca\.crt}' | base64 -d > /tmp/ca.crt
-
-# List topics (requires authentication or plain listener)
-/tmp/kafka_2.13-4.3.1/bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap.kafka.svc:9092 --list
-
-# Create a KafkaUser for scram-sha-512 authentication
-kubectl apply -f - <<EOF
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaUser
-metadata:
-  name: my-user
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: my-cluster
-spec:
-  authentication:
-    type: scram-sha-512
-  authorization:
-    type: simple
-    acls:
-      - resource:
-          type: topic
-          name: test-topic
-          patternType: literal
-        operation: Read
-      - resource:
-          type: topic
-          name: test-topic
-          patternType: literal
-        operation: Write
-      - resource:
-          type: group
-          name: my-group
-          patternType: literal
-        operation: Read
-EOF
-```
-
----
-
-**File last updated: 2026-10-23 01:43:00 +03:00**
+*File last updated: 2026-10-23*

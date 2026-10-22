@@ -1,7 +1,6 @@
 # Strimzi-Kafka Setup 
 Start resolving Pending tasks.
-**Goal:** Automate the full installation and configuration of a Strimzi-Kafka platform on the remote host `192.168.1.22` (user `kube`, password `kube666`). All actions must run on the remote host only; the local machine must not be modified.
-Do not store or place here any files repos etc do all on remote host , if there are already move them to 192.168.1.22
+
 **Reference credentials:** see `TODO_K8S.md` for host, user, password and sudo rights.
 Do not delete this line. First check if all fixed as done Tasks are working . After you pass the whole file with requirements update Pending / In-Progress Tasks and Completed Tasks todo_strimzi.txt and write all admin passwords at the end of file 
 When you commit todo_strimzi.txt to github repo dont show in public admin passwords and sensitive info like internal ip addresses . At all no need this file particularly to be commited it is exception and this repo is public.

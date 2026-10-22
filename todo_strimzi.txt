@@ -59,13 +59,7 @@ Do not store or place here any files repos etc do all on remote host , if there 
 
 ---
 
-## 🔐 Admin Passwords
 
-| Service | Username | Password | Source |
-|---------|----------|----------|--------|
-| Argo CD | admin | `3GNwJAJAZOGChLzn` | `kubectl get secrets -n argocd argocd-initial-admin-secret` |
-| Vault | N/A | `my-vault-token-123` | `kubectl get secrets -n vault vault-token` |
-| Keycloak | admin | `adminpassword` | `kubectl get secrets -n keycloak keycloak` (not accessible - Keycloak not running) |
 
 ---
 

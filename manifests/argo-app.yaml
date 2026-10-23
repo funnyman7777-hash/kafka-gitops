@@ -11,7 +11,6 @@ spec:
     repoURL: git@github.com:funnyman7777-hash/kafka-gitops.git
     targetRevision: HEAD
     path: manifests
-    helm: {}
   destination:
     server: https://kubernetes.default.svc
     namespace: default

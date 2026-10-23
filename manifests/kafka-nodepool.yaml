@@ -11,3 +11,4 @@ spec:
     type: ephemeral
   roles:
     - broker
+    - controller
